@@ -209,8 +209,13 @@ def clone_params(params):
         for key, value in params.items()
     }
 
-# Step 13 - scale_params (not yet solved)
-# TODO: implement
+# Step 13 - scale_params
+def scale_params(params, scalar):
+    """Return a new parameter dictionary with every array scaled by scalar."""
+    return {
+        key: value * scalar
+        for key, value in params.items()
+    }
 
 # Step 14 - subtract_params (not yet solved)
 # TODO: implement
