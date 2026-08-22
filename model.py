@@ -225,8 +225,19 @@ def subtract_params(params_a, params_b):
         for key in params_a
     }
 
-# Step 15 - average_params (not yet solved)
-# TODO: implement
+# Step 15 - average_params
+def average_params(params_list):
+    """Return the element-wise mean of a non-empty list of parameter dicts."""
+    if not params_list:
+        raise ValueError("params_list must be non-empty")
+
+    keys = params_list[0].keys()
+    n = len(params_list)
+
+    return {
+        key: sum(params[key] for params in params_list) / n
+        for key in keys
+    }
 
 # Step 16 - iid_shard_dataset (not yet solved)
 # TODO: implement
