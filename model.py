@@ -80,8 +80,44 @@ def cross_entropy_loss(logits, labels):
     # Mean negative log-likelihood
     return -np.mean(true_class_log_probs)
 
-# Step 6 - model_backward (not yet solved)
-# TODO: implement
+# Step 6 - model_backward
+def model_backward(params, cache, labels):
+    """Compute gradients of the mean softmax cross-entropy loss."""
+    x = cache["x"]
+    z1 = cache["z1"]
+    h1 = cache["h1"]
+    logits = cache["logits"]
+
+    batch_size = x.shape[0]
+
+    # Softmax probabilities
+    probs = softmax(logits)
+
+    # Gradient of cross-entropy w.r.t. logits
+    d_logits = probs.copy()
+    d_logits[np.arange(batch_size), labels] -= 1.0
+    d_logits /= batch_size
+
+    # Output layer: logits = h1 @ W2 + b2
+    dW2 = h1.T @ d_logits
+    db2 = np.sum(d_logits, axis=0)
+
+    # Backprop through output layer
+    dh1 = d_logits @ params["W2"].T
+
+    # Backprop through ReLU
+    dz1 = dh1 * (z1 > 0)
+
+    # Hidden layer: z1 = x @ W1 + b1
+    dW1 = x.T @ dz1
+    db1 = np.sum(dz1, axis=0)
+
+    return {
+        "W1": dW1,
+        "b1": db1,
+        "W2": dW2,
+        "b2": db2,
+    }
 
 # Step 7 - init_adamw_state (not yet solved)
 # TODO: implement
