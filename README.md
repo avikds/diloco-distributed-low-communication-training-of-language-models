@@ -41,6 +41,28 @@ python scaffold.py
 - [x] **29.** classification_accuracy
 - [x] **30.** communication_savings
 
----
+## Results
 
-Built on Deep-ML.
+```
+Initialized 2-layer MLP with param keys: ['W1', 'W2', 'b1', 'b2']
+Initial logits shape: (4, 3)
+Initial train loss: 1.317
+Initial train acc : 0.3156
+
+IID shards: [80, 80, 80, 80]
+
+=== DiLoCo training log (last few rounds) ===
+{'round_losses': 0.023357776220712806}
+{'round_losses': 0.020273879478971107}
+{'round_losses': 0.011235539436954023}
+DiLoCo eval loss: 0.07
+DiLoCo eval acc : 0.9625
+
+=== Synchronous baseline ===
+Sync   eval loss: 0.1408
+Sync   eval acc : 0.95
+
+=== Communication accounting ===
+Total params per worker : 195
+Communication summary   : {'diloco_scalars': 12480, 'sync_scalars': 249600, 'ratio': 0.05, 'savings_factor': 20.0}
+```
