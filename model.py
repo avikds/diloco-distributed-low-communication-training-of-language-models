@@ -39,8 +39,21 @@ def relu(x):
     """Apply element-wise Rectified Linear Unit (ReLU)."""
     return np.maximum(x, 0)
 
-# Step 3 - model_forward (not yet solved)
-# TODO: implement
+# Step 3 - model_forward
+def model_forward(params, x):
+    """Run the 2-layer MLP forward pass and stash intermediates for backprop."""
+    z1 = x @ params["W1"] + params["b1"]
+    h1 = relu(z1)
+    logits = h1 @ params["W2"] + params["b2"]
+
+    cache = {
+        "x": x,
+        "z1": z1,
+        "h1": h1,
+        "logits": logits,
+    }
+
+    return logits, cache
 
 # Step 4 - softmax (not yet solved)
 # TODO: implement
