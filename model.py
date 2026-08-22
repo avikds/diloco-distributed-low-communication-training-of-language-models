@@ -475,8 +475,71 @@ def train_diloco(init_params, worker_shards, num_rounds, num_inner_steps, batch_
 
     return global_params, history
 
-# Step 27 - train_synchronous_baseline (not yet solved)
-# TODO: implement
+# Step 27 - train_synchronous_baseline
+def train_synchronous_baseline(init_params, worker_shards, num_steps, batch_size, inner_hparams, seed=0):
+    """Train a shared model with one synchronized AdamW update per step."""
+    params = clone_params(init_params)
+    adam_state = init_adamw_state(params)
+    rng = np.random.default_rng(seed)
+
+    history = {
+        "step_losses": []
+    }
+
+    for _ in range(num_steps):
+        worker_grads = []
+        worker_losses = []
+
+        for x_shard, y_shard in worker_shards:
+            x_batch, y_batch = sample_worker_batch(
+                x_shard, y_shard, batch_size, rng
+            )
+
+            logits, cache = model_forward(params, x_batch)
+            loss = cross_entropy_loss(logits, y_batch)
+            grads = model_backward(params, cache, y_batch)
+
+            worker_grads.append(grads)
+            worker_losses.append(float(loss))
+
+        if worker_grads:
+            avg_grads = {
+                key: sum(grads[key] for grads in worker_grads) / len(worker_grads)
+                for key in params
+            }
+
+            adam_state = update_adam_moments(
+                adam_state,
+                avg_grads,
+                inner_hparams["beta1"],
+                inner_hparams["beta2"],
+            )
+
+            m_hat, v_hat = bias_correct_moments(
+                adam_state,
+                inner_hparams["beta1"],
+                inner_hparams["beta2"],
+            )
+
+            params = adam_param_step(
+                params,
+                m_hat,
+                v_hat,
+                inner_hparams["lr"],
+                inner_hparams["eps"],
+            )
+
+            params = decoupled_weight_decay(
+                params,
+                inner_hparams["lr"],
+                inner_hparams["weight_decay"],
+            )
+
+            history["step_losses"].append(float(np.mean(worker_losses)))
+        else:
+            history["step_losses"].append(0.0)
+
+    return params, history
 
 # Step 28 - evaluate_loss (not yet solved)
 # TODO: implement
