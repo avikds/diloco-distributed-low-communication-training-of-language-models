@@ -273,8 +273,39 @@ def iid_shard_dataset(x, y, num_workers, seed=0):
 
     return shards
 
-# Step 17 - noniid_shard_dataset (not yet solved)
-# TODO: implement
+# Step 17 - noniid_shard_dataset
+def noniid_shard_dataset(x, y, num_workers, num_classes, seed=0):
+    """Partition (x, y) into reproducible non-IID class-based worker shards."""
+    if num_workers <= 0:
+        raise ValueError("num_workers must be positive")
+
+    if num_classes <= 0:
+        raise ValueError("num_classes must be positive")
+
+    if len(x) != len(y):
+        raise ValueError("x and y must contain the same number of examples")
+
+    rng = np.random.default_rng(seed)
+
+    shards = []
+
+    for worker_idx in range(num_workers):
+        # Worker owns classes c where c % num_workers == worker_idx.
+        assigned_classes = np.arange(worker_idx, num_classes, num_workers)
+
+        # Select all examples belonging to this worker's classes.
+        mask = np.isin(y, assigned_classes)
+        indices = np.flatnonzero(mask)
+
+        # Shuffle examples within the worker's shard.
+        rng.shuffle(indices)
+
+        shards.append((
+            x[indices],
+            y[indices],
+        ))
+
+    return shards
 
 # Step 18 - sample_worker_batch (not yet solved)
 # TODO: implement
