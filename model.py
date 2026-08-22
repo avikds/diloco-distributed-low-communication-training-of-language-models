@@ -340,8 +340,28 @@ def local_train_step(params, adam_state, x_batch, y_batch, lr, beta1, beta2, eps
     new_params = decoupled_weight_decay(new_params, lr, weight_decay)
     return new_params, new_adam_state, loss
 
-# Step 20 - inner_train_worker (not yet solved)
-# TODO: implement
+# Step 20 - inner_train_worker
+def inner_train_worker(params, x_shard, y_shard, num_inner_steps, batch_size, lr, beta1, beta2, eps, weight_decay, seed):
+    """Run the local AdamW inner loop for one DiLoCo worker."""
+    worker_params = clone_params(params)
+    adam_state = init_adamw_state(worker_params)
+    rng = np.random.default_rng(seed)
+
+    losses = []
+
+    for _ in range(num_inner_steps):
+        x_batch, y_batch = sample_worker_batch(x_shard, y_shard, batch_size, rng)
+
+        worker_params, adam_state, loss = local_train_step(
+            worker_params, adam_state, x_batch, y_batch,
+            lr, beta1, beta2, eps, weight_decay
+        )
+
+        losses.append(float(loss))
+
+    mean_loss = float(np.mean(losses))
+
+    return worker_params, mean_loss
 
 # Step 21 - init_outer_optimizer (not yet solved)
 # TODO: implement
