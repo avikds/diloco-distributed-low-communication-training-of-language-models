@@ -307,8 +307,26 @@ def noniid_shard_dataset(x, y, num_workers, num_classes, seed=0):
 
     return shards
 
-# Step 18 - sample_worker_batch (not yet solved)
-# TODO: implement
+# Step 18 - sample_worker_batch
+def sample_worker_batch(x_shard, y_shard, batch_size, rng):
+    """Sample a random mini-batch from a worker's local shard."""
+    n = len(x_shard)
+
+    if batch_size < 0:
+        raise ValueError("batch_size must be non-negative")
+
+    if n == 0 and batch_size > 0:
+        raise ValueError("cannot sample from an empty shard")
+
+    replace = batch_size > n
+
+    indices = rng.choice(
+        n,
+        size=batch_size,
+        replace=replace,
+    )
+
+    return x_shard[indices], y_shard[indices]
 
 # Step 19 - local_train_step (not yet solved)
 # TODO: implement
