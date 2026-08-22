@@ -396,8 +396,11 @@ def nesterov_param_update(params, outer_state, outer_grad, outer_lr, momentum_co
         for key in params
     }
 
-# Step 24 - compute_outer_gradient (not yet solved)
-# TODO: implement
+# Step 24 - compute_outer_gradient
+def compute_outer_gradient(global_params, worker_params_list):
+    """Compute the outer pseudo-gradient: global params minus averaged worker params."""
+    avg_worker_params = average_params(worker_params_list)
+    return subtract_params(global_params, avg_worker_params)
 
 # Step 25 - run_diloco_round (not yet solved)
 # TODO: implement
