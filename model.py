@@ -217,8 +217,13 @@ def scale_params(params, scalar):
         for key, value in params.items()
     }
 
-# Step 14 - subtract_params (not yet solved)
-# TODO: implement
+# Step 14 - subtract_params
+def subtract_params(params_a, params_b):
+    """Return the element-wise difference params_a - params_b."""
+    return {
+        key: params_a[key] - params_b[key]
+        for key in params_a
+    }
 
 # Step 15 - average_params (not yet solved)
 # TODO: implement
