@@ -119,8 +119,24 @@ def model_backward(params, cache, labels):
         "b2": db2,
     }
 
-# Step 7 - init_adamw_state (not yet solved)
-# TODO: implement
+# Step 7 - init_adamw_state
+def init_adamw_state(params):
+    """Initialize AdamW first/second moment state and step counter."""
+    m = {
+        key: np.zeros_like(value)
+        for key, value in params.items()
+    }
+
+    v = {
+        key: np.zeros_like(value)
+        for key, value in params.items()
+    }
+
+    return {
+        "m": m,
+        "v": v,
+        "t": 0,
+    }
 
 # Step 8 - update_adam_moments (not yet solved)
 # TODO: implement
