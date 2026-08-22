@@ -63,8 +63,22 @@ def softmax(logits):
 
     return exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
 
-# Step 5 - cross_entropy_loss (not yet solved)
-# TODO: implement
+# Step 5 - cross_entropy_loss
+def cross_entropy_loss(logits, labels):
+    """Compute mean numerically-stable cross-entropy loss."""
+    # Numerically stable log-sum-exp:
+    max_logits = np.max(logits, axis=1, keepdims=True)
+    log_sum_exp = (
+        max_logits
+        + np.log(np.sum(np.exp(logits - max_logits), axis=1, keepdims=True))
+    )
+
+    # Log probability of the true class
+    true_class_logits = logits[np.arange(logits.shape[0]), labels]
+    true_class_log_probs = true_class_logits - log_sum_exp[:, 0]
+
+    # Mean negative log-likelihood
+    return -np.mean(true_class_log_probs)
 
 # Step 6 - model_backward (not yet solved)
 # TODO: implement
