@@ -542,10 +542,9 @@ def train_synchronous_baseline(init_params, worker_shards, num_steps, batch_size
 
 # Step 28 - evaluate_loss
 def evaluate_loss(params, x, y):
-    """Return the mean cross-entropy loss on the given dataset."""
+    """Return the mean cross-entropy loss on the held-out data."""
     logits, _ = model_forward(params, x)
-    loss = cross_entropy_loss(logits, y)
-    return float(loss)
+    return float(cross_entropy_loss(logits, y))
 
 # Step 29 - classification_accuracy (not yet solved)
 # TODO: implement
