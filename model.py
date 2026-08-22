@@ -9,7 +9,6 @@ import numpy as np
 # Step 1 - init_model_params
 import numpy as np
 
-
 def init_model_params(input_dim, hidden_dim, output_dim, seed=0):
     """
     Initialize parameters for a 2-layer MLP.
