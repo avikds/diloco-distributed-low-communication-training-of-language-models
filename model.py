@@ -191,8 +191,15 @@ def adam_param_step(params, m_hat, v_hat, lr, eps):
 
     return new_params
 
-# Step 11 - decoupled_weight_decay (not yet solved)
-# TODO: implement
+# Step 11 - decoupled_weight_decay
+def decoupled_weight_decay(params, lr, weight_decay):
+    """Apply AdamW's decoupled weight decay without modifying params."""
+    decay_factor = 1.0 - lr * weight_decay
+
+    return {
+        key: value * decay_factor
+        for key, value in params.items()
+    }
 
 # Step 12 - clone_params (not yet solved)
 # TODO: implement
