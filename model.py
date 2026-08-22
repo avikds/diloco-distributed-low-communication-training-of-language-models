@@ -546,8 +546,12 @@ def evaluate_loss(params, x, y):
     logits, _ = model_forward(params, x)
     return float(cross_entropy_loss(logits, y))
 
-# Step 29 - classification_accuracy (not yet solved)
-# TODO: implement
+# Step 29 - classification_accuracy
+def classification_accuracy(params, x, y):
+    """Return top-1 classification accuracy on the given dataset."""
+    logits, _ = model_forward(params, x)
+    predictions = np.argmax(logits, axis=1)
+    return float(np.mean(predictions == y))
 
 # Step 30 - communication_savings (not yet solved)
 # TODO: implement
