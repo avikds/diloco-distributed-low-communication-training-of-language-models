@@ -363,8 +363,17 @@ def inner_train_worker(params, x_shard, y_shard, num_inner_steps, batch_size, lr
 
     return worker_params, mean_loss
 
-# Step 21 - init_outer_optimizer (not yet solved)
-# TODO: implement
+# Step 21 - init_outer_optimizer
+def init_outer_optimizer(params):
+    """Initialize the server-side Nesterov momentum state."""
+    momentum = {
+        key: np.zeros_like(value)
+        for key, value in params.items()
+    }
+
+    return {
+        "momentum": momentum
+    }
 
 # Step 22 - update_outer_momentum (not yet solved)
 # TODO: implement
