@@ -9,6 +9,7 @@ import numpy as np
 # Step 1 - init_model_params
 import numpy as np
 
+
 def init_model_params(input_dim, hidden_dim, output_dim, seed=0):
     """
     Initialize parameters for a 2-layer MLP.
@@ -19,16 +20,15 @@ def init_model_params(input_dim, hidden_dim, output_dim, seed=0):
         W2: (hidden_dim, output_dim)
         b2: (output_dim,)
 
+    Weights use He initialization and biases are initialized to zero.
     All parameters are np.float64 arrays.
-    Weights are initialized from a seeded NumPy RNG, while
-    biases are initialized to zero.
     """
     rng = np.random.default_rng(seed)
 
     params = {
-        "W1": rng.standard_normal((input_dim, hidden_dim)).astype(np.float64),
+        "W1": rng.normal(0.0, np.sqrt(2.0 / input_dim), (input_dim, hidden_dim)).astype(np.float64),
         "b1": np.zeros(hidden_dim, dtype=np.float64),
-        "W2": rng.standard_normal((hidden_dim, output_dim)).astype(np.float64),
+        "W2": rng.normal(0.0, np.sqrt(2.0 / hidden_dim), (hidden_dim, output_dim)).astype(np.float64),
         "b2": np.zeros(output_dim, dtype=np.float64),
     }
 
@@ -541,8 +541,12 @@ def train_synchronous_baseline(init_params, worker_shards, num_steps, batch_size
 
     return params, history
 
-# Step 28 - evaluate_loss (not yet solved)
-# TODO: implement
+# Step 28 - evaluate_loss
+def evaluate_loss(params, x, y):
+    """Return the mean cross-entropy loss on the given dataset."""
+    logits, _ = model_forward(params, x)
+    loss = cross_entropy_loss(logits, y)
+    return float(loss)
 
 # Step 29 - classification_accuracy (not yet solved)
 # TODO: implement
