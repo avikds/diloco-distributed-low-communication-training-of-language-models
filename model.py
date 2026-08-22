@@ -34,8 +34,10 @@ def init_model_params(input_dim, hidden_dim, output_dim, seed=0):
 
     return params
 
-# Step 2 - relu (not yet solved)
-# TODO: implement
+# Step 2 - relu
+def relu(x):
+    """Apply element-wise Rectified Linear Unit (ReLU)."""
+    return np.maximum(x, 0)
 
 # Step 3 - model_forward (not yet solved)
 # TODO: implement
