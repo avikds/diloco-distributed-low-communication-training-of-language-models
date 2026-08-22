@@ -239,8 +239,39 @@ def average_params(params_list):
         for key in keys
     }
 
-# Step 16 - iid_shard_dataset (not yet solved)
-# TODO: implement
+# Step 16 - iid_shard_dataset
+def iid_shard_dataset(x, y, num_workers, seed=0):
+    """Partition (x, y) into reproducible, disjoint IID shards."""
+    if num_workers <= 0:
+        raise ValueError("num_workers must be positive")
+
+    if len(x) != len(y):
+        raise ValueError("x and y must contain the same number of examples")
+
+    rng = np.random.default_rng(seed)
+
+    # Shuffle indices so each worker receives a random IID subset.
+    indices = rng.permutation(len(x))
+
+    # Remainder examples go to the earliest shards.
+    base_size = len(x) // num_workers
+    remainder = len(x) % num_workers
+
+    shards = []
+    start = 0
+
+    for worker_idx in range(num_workers):
+        shard_size = base_size + (1 if worker_idx < remainder else 0)
+        shard_indices = indices[start:start + shard_size]
+
+        shards.append((
+            x[shard_indices],
+            y[shard_indices],
+        ))
+
+        start += shard_size
+
+    return shards
 
 # Step 17 - noniid_shard_dataset (not yet solved)
 # TODO: implement
